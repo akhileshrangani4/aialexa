@@ -295,17 +295,22 @@ export function Chat({ chatbot, defaultMessage, className, withExitX = false, cl
                   </div>
                 }
 
-                <Input
+                <textarea
                   ref={inputRef}
                   tabIndex={0}
                   placeholder={chatbot.chatMessagePlaceHolder}
-                  className="border-0 focus-visible:ring-0 min-h-[60px] w-full resize-none bg-transparent pl-4 pr-8 md:pr-12 py-[1.3rem] focus-within:outline-none sm:text-sm"
+                  className="border-0 focus-visible:ring-0 min-h-[60px] max-h-[120px] w-full resize-none bg-transparent pl-4 pr-8 md:pr-12 py-[1.3rem] focus-within:outline-none sm:text-sm overflow-y-auto"
                   spellCheck={false}
                   autoComplete="off"
                   autoCorrect="off"
                   name="message"
                   value={input}
                   onChange={handleInputChange}
+                  style={{
+                    overflowY: 'auto',
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#d6dee1 transparent'
+                  }}
                 />
                 <div className={`absolute right-0 top-[14px] sm:right-4`}>
                   <Tooltip>
