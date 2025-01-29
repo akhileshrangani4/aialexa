@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { upload } from '@vercel/blob/client'
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -27,6 +28,27 @@ interface UploadFileFormProps extends React.HTMLAttributes<HTMLFormElement> { }
 
 type FormData = z.infer<typeof fileUploadSchema>
 
+const ALLOWED_FILE_TYPES = [
+    'pdf',
+    'txt',
+    'json',
+    'doc',
+    'docx',
+    'xls',
+    'xlsx',
+    'ppt',
+    'pptx',
+    'csv',
+    'md',
+    'yaml',
+    'yml'
+];
+
+function isValidFileType(filename: string): boolean {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    return extension ? ALLOWED_FILE_TYPES.includes(extension) : false;
+}
+
 export function UploadFileForm({ className, ...props }: UploadFileFormProps) {
     const router = useRouter()
     const inputFileRef = useRef<HTMLInputElement>(null);
@@ -43,7 +65,21 @@ export function UploadFileForm({ className, ...props }: UploadFileFormProps) {
     // Function to handle file selection
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const newFiles = Array.from(event.target.files || []);
-        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+        
+        // Filter out invalid file types
+        const validFiles = newFiles.filter(file => {
+            const isValid = isValidFileType(file.name);
+            if (!isValid) {
+                toast({
+                    title: "Invalid file type",
+                    description: `File "${file.name}" is not supported. Please upload only ${ALLOWED_FILE_TYPES.join(', ')} files.`,
+                    variant: "destructive",
+                });
+            }
+            return isValid;
+        });
+
+        setSelectedFiles((prevFiles) => [...prevFiles, ...validFiles]);
     }
 
     // Function to remove a file from the selected list and clear the input field if necessary
@@ -89,31 +125,37 @@ export function UploadFileForm({ className, ...props }: UploadFileFormProps) {
             setCurrentFileIndex(i + 1); // Update the progress counter
 
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const response = await fetch(`/api/upload?filename=${file.name}`, {
-                    method: "POST",
-                    body: formData,
+                // Use the Vercel Blob client upload directly
+                const blob = await upload(file.name, file, {
+                    access: 'public',
+                    handleUploadUrl: '/api/upload/blob',
                 });
 
-                if (!response.ok) {
-                    uploadSuccess = false; // Mark that an error occurred
-                    const errorMessage = await response.text();
-                    toast({
-                        title: "Upload failed",
-                        description: `Failed to upload "${file.name}". ${errorMessage || 'Please try again.'}`,
-                        variant: "destructive",
-                    });
-                    break; // Stop uploading if a file fails
+                if (!blob?.url) {
+                    throw new Error('Upload failed');
                 }
-                const result = await response.json();
+
+                // Notify the server that upload is complete
+                const complete = await fetch('/api/upload/blob/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        filename: file.name,
+                        url: blob.url,
+                    }),
+                });
+
+                if (!complete.ok) {
+                    throw new Error('Failed to process upload');
+                }
 
             } catch (error) {
                 uploadSuccess = false; // Mark that an error occurred
                 toast({
-                    title: "Network Error",
-                    description: `Failed to upload "${file.name}". Please check your connection and try again.`,
+                    title: "Upload Error",
+                    description: `Failed to upload "${file.name}". ${error instanceof Error ? error.message : 'Please try again.'}`,
                     variant: "destructive",
                 });
                 break; // Stop uploading if a network error occurs
@@ -133,13 +175,15 @@ export function UploadFileForm({ className, ...props }: UploadFileFormProps) {
                 description: "All files have been successfully uploaded.",
             });
 
-            setSelectedFiles([]); // Clear the file list
-            if (inputFileRef.current) {
-                inputFileRef.current.value = ""; // Clear the file input field
+            setSelectedFiles([]);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
+            
+            // Force a hard refresh of the page to show new files
+            router.refresh();
+            router.push('/dashboard/files');
         }
-
-        router.refresh()
     }
 
     return (
@@ -176,7 +220,7 @@ export function UploadFileForm({ className, ...props }: UploadFileFormProps) {
                                         multiple
                                     />
                                     <FormDescription>
-                                        Select files to be used for training.
+                                        Select files to be used for training. Supported formats: {ALLOWED_FILE_TYPES.join(', ')}.
                                     </FormDescription>
                                     <FormMessage />
                                     {selectedFiles.length > 0 && (
