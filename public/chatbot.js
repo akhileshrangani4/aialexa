@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Create and append the chat iframe
         var chatIframe = document.createElement('iframe');
         chatIframe.src = "https://www.aialexa.org/embed/" + chatbotId + "/window?chatbox=false&withExitX=true";
-        chatIframe.style = "z-index: 50; margin-right: 1rem; margin-bottom: 6rem; display: none; position: fixed; right: 0; bottom: 0; pointer-events: none; overflow: hidden; height: 65vh; border: 2px solid #e2e8f0; border-radius: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 30rem;";
+        chatIframe.style = "z-index: 50; margin-right: 1rem; margin-bottom: 6rem; display: none; position: fixed; right: 0; bottom: 0; pointer-events: none; overflow: hidden; height: 75vh; border: 2px solid #e2e8f0; border-radius: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 55rem;";
         chatIframe.allowFullscreen = true;
         chatIframe.id = "aialexa-chatbot-iframe";
         document.body.appendChild(chatIframe);
@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         e.style.zIndex = "9999";
                     } else {
                         e.style.position = "fixed";
-                        e.style.width = "30rem";
-                        e.style.height = "65vh";
+                        e.style.width = "55rem";
+                        e.style.height = "75vh";
                         e.style.bottom = "0";
                         e.style.right = "0";
                         e.style.top = "";

@@ -15,11 +15,11 @@ export default function Chatbot() {
         bottom: 0,
         pointerEvents: 'none',
         overflow: 'hidden',
-        height: '65vh',
+        height: '75vh',
         border: '2px solid #e2e8f0',
         borderRadius: '0.375rem',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        width: '30rem'
+        width: '55rem'
     };
 
     useEffect(() => {
@@ -47,8 +47,8 @@ export default function Chatbot() {
                     } else {
                         // remove fullscreen
                         iframe.style.position = 'fixed';
-                        iframe.style.width = '30rem';
-                        iframe.style.height = '65vh';
+                        iframe.style.width = '55rem';
+                        iframe.style.height = '75vh';
                         iframe.style.bottom = '0';
                         iframe.style.right = '0';
 
