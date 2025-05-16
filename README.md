@@ -1,4 +1,4 @@
-# AIAlexa
+# AIAlexa [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/akhileshrangani4/aialexa)
 
 AIAlexa is an advanced AI-powered chatbot platform, specifically designed for Professor Alexa Alice Joubin. It extends the capabilities of the original OpenAssistantGPT project with additional features and improvements tailored for enhanced user experience and functionality in an academic setting.
 
