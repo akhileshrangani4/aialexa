@@ -30,8 +30,6 @@ interface ChatbotOperationsProps {
 }
 
 export function ChatbotOperations({ chatbot }: ChatbotOperationsProps) {
-  console.log("Chatbot", chatbot);
-
   const router = useRouter();
   const [showDeleteAlert, setShowDeleteAlert] = React.useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = React.useState<boolean>(false);

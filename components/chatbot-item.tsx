@@ -14,7 +14,6 @@ interface ChatbotProps {
 }
 
 export function ChatbotItem({ chatbot, model }: ChatbotProps) {
-  console.log("chatbot", chatbot);
   return (
     <div className="flex items-center justify-between p-4">
       <div className="grid gap-1">

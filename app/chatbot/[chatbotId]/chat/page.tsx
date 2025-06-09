@@ -23,13 +23,12 @@ export default async function ChatbotPage({ params }: ChatbotSettingsProps) {
   return (
     <div className="flex flex-col h-svh">
       <nav className="w-full px-6 py-4 shadow-sm bg-white">
-        <h1 className="text-sm font-medium text-gray-700">AI Tutor</h1>
+        <h1 className="text-base font-medium text-gray-800">AI Tutor</h1>
       </nav>
-
-      <div className="flex-1 p-8 md:p-12 lg:p-16">
+      <div className="flex-1 ">
         <iframe
           src={`/embed/${chatbot.id}/window?chatbox=false`}
-          className="w-full h-full border rounded-lg shadow-lg"
+          className="w-full h-full border-none"
           allowFullScreen
           allow="clipboard-read; clipboard-write"></iframe>
       </div>
